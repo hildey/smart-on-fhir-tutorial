@@ -10,7 +10,10 @@
     function onReady(smart)  {
       if (smart.hasOwnProperty('patient')) {
         var patient = smart.patient;
+        // smart.patient.read() Returns the context for the patient the app was launched for.
         var pt = patient.read();
+        // smart.patient.api fetchAll() Uses the fhir.js API to retrieve a complete
+        // set of resources for the patient in context.
         var obv = smart.patient.api.fetchAll({
                     type: 'Observation',
                     query: {
@@ -24,6 +27,8 @@
 
         $.when(pt, obv).fail(onError);
 
+        // The last function from fhir-client.js is the byCodes utility function that returns
+        // a function to search a given resource for specific codes returned from that response.
         $.when(pt, obv).done(function(patient, obv) {
           var byCodes = smart.byCodes(obv, 'code');
           var gender = patient.gender;
@@ -114,6 +119,8 @@
     }
   }
 
+  // On a success from extractData we’ll call drawVisualization which will show
+  // the table div as well as filling out the relevant sections.
   window.drawVisualization = function(p) {
     $('#holder').show();
     $('#loading').hide();
